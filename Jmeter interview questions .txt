@@ -21,7 +21,7 @@ Ans—--
                Samplers – Represent different types of requests, such as HTTP requests, FTP    requests, JDBC queries, etc
 
 
-*************************************************************************************************************
+*********************************************************************************************************
 
 
  3. How can we capture HTTPS traffic using JMeter?
