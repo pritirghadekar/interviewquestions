@@ -1,0 +1,310 @@
+﻿1. What are the different types of techniques that we use typically in performance testing?
+     Ans—-
+                  Load Testing – Simulates expected user load to check system behavior.
+
+                  Stress Testing – Evaluates system stability under extreme conditions.
+
+                  Spike Testing – Tests sudden increases and decreases in load.
+
+                   Soak Testing (Endurance Testing) – Monitors system performance over an                   extended period.
+
+                    Scalability Testing – Determines the application's ability to handle increased load.
+
+
+*************************************************************************************************************
+
+
+ 2. What are samplers and thread groups
+Ans—--
+             Thread Groups – Define the number of users (threads), ramp-up time, and loop count for test execution.
+
+               Samplers – Represent different types of requests, such as HTTP requests, FTP    requests, JDBC queries, etc
+
+
+*************************************************************************************************************
+
+
+ 3. How can we capture HTTPS traffic using JMeter?
+Ans— 
+           Add a "Recording Controller" to the test plan.
+
+          Configure "HTTP(S) Test Script Recorder" under Test Plan > Workbench.
+
+          Set up JMeter as a proxy (localhost, port 8080).
+
+          Install the JMeter CA Certificate in the browser to capture secure traffic.
+
+          Start the proxy, perform actions in the browser, and JMeter will record them.
+
+
+Explanation;
+
+
+                  To capture HTTPS traffic in JMeter, you need to set up JMeter as a proxy and install its SSL certificate in your browser. Below is a step-by-step guide to achieve this:
+________________
+
+
+1. Prerequisites
+Ensure you have:
+✅ Installed Apache JMeter (latest version)
+✅ Java installed and configured in system PATH
+✅ A web browser (e.g., Chrome or Firefox)
+________________
+
+
+2. Configure JMeter to Act as a Proxy
+1. Launch JMeter
+
+   * Open jmeter.bat (Windows) or jmeter.sh (Mac/Linux) from the bin folder.
+
+      2. Add HTTP(S) Test Script Recorder
+
+         * In JMeter, go to Test Plan → Right-click → Add → Non-Test Elements → HTTP(S) Test Script Recorder
+
+            3. Configure the Proxy Settings
+
+               * In the Port field, enter 8080 (default) or any available port.
+
+               * Under Target Controller, choose a Recording Controller to store recorded requests.
+
+               * Click Add Suggested Excludes to ignore unnecessary requests (like images, CSS files).
+
+________________
+
+
+3. Install JMeter Root Certificate (ApacheJMeterTemporaryRootCA.crt)
+Since JMeter acts as a Man-in-the-Middle (MITM) proxy, your browser needs to trust its certificate to capture HTTPS traffic.
+                  1. Generate the Certificate
+
+                     * Start the HTTP(S) Test Script Recorder by clicking Start in JMeter.
+
+                     * JMeter will generate a certificate file at:
+
+                        * bin/ApacheJMeterTemporaryRootCA.crt
+
+                           2. Install the Certificate in Your Browser
+
+                              * Open Chrome/Firefox
+
+                              * Go to Settings → Privacy & Security → Certificates
+
+                              * Import ApacheJMeterTemporaryRootCA.crt as a Trusted Root Certificate Authority
+
+⚠ Important: Remove this certificate after testing to avoid security risks.
+________________
+
+
+4. Configure Browser Proxy to Route Traffic Through JMeter
+                                 1. Open Chrome or Firefox
+
+                                 2. Go to Settings → Network Settings → Manual Proxy Configuration
+
+                                 3. Set HTTP Proxy to localhost and Port to 8080
+
+                                 4. Enable Use this proxy server for all protocols
+
+Now, all your browser traffic will pass through JMeter, allowing it to capture HTTPS requests.
+________________
+
+
+5. Start Recording HTTPS Requests
+                                    1. Click Start in the HTTP(S) Test Script Recorder in JMeter.
+
+                                    2. Open the browser and navigate to the application (e.g., login page, order placement).
+
+                                    3. JMeter will capture and list all HTTPS requests under the Recording Controller.
+
+                                    4. Stop recording once done.
+
+________________
+
+
+6. Save and Use Recorded Requests for Testing
+                                       * You can now modify or replay these requests to test API performance.
+
+                                       * Add Assertions to validate responses.
+
+                                       * Use JMeter Listeners (View Results Tree, Summary Report) to analyze test results.
+
+
+
+
+*************************************************************************************************************
+
+
+
+
+
+
+
+
+ 4. What are the operators in Jmeter 
+Ans—- 
+           Logical Operators: AND, OR, NOT
+
+Comparison Operators: ==, !=, >, <, >=, <=
+
+Regular Expressions: Used for pattern matching
+
+Conditional Operators: if, else
+
+
+*************************************************************************************************************
+5. JMeter Supported Protocols
+Ans— 
+            HTTP, HTTPS
+
+            FTP
+
+            JDBC (Database)
+
+         SOAP / REST API
+
+        JMS (Java Messaging Service)
+
+        SMTP, POP3, IMAP (Email protocols)
+
+
+*************************************************************************************************************
+ 6. Load Testing with Different User Types
+( First Putting a load by simply logging into the application. Second who are doing some transactions? So all the users are actors. what are different types of users you have and what is their load? More details of technical things, I want to know what you did in API testing.)
+Ans— 
+           Users Logging In: Basic authentication and session handling.
+
+        Users Performing Transactions: Actions such as placing orders, updating profiles, or      performing CRUD operations.
+
+Different User Types:
+                            Customers ,Store Managers ,Admins/Internal Staff
+
+Load Distribution: Defining concurrent users for each role and simulating their interactions.
+
+
+           
+*********************************************************************************************************
+ 7. How the JMeter conducts the testing.
+Ans—
+            Simulates virtual users using Thread Groups.
+
+            Sends requests using Samplers (e.g., HTTP Requests).
+
+           Measures response time, latency, error rates.
+
+           Generates detailed reports using Listeners (Graph Results, Summary Report).
+
+
+*************************************************************************************************************
+
+
+ 8. Performance Testing Approach for API Testing
+  (So, I wanted to know more about what kind of testing levels are there. Okay, so what is the performance testing requirement you have and what's your approach? What is your execution? That details I want to see. I want to know from this, specifically from this API part.)
+Ans—
+           Performance Testing Requirements
+                                          * Validate API response time, throughput, and error rates.
+
+                                          * Ensure API handles expected and peak loads.
+
+Execution Approach
+                                             1. Identify API Endpoints – Login, Order Placement, Admin Access.
+
+                                             2. Configure JMeter – Add Thread Groups, HTTP Requests.
+
+                                             3. Set Load Parameters – Define users, ramp-up time, and test duration.
+
+                                             4. Run Test & Monitor Results – Use Listeners to analyze response times and errors.
+
+                                             5. Optimize & Retest – Identify bottlenecks and retest after optimizations.
+Testing Levels in Performance Testing
+Performance testing is conducted at different levels to ensure that APIs and applications function optimally under varying loads. The key levels include:
+                                                1. Unit Performance Testing – Testing individual API endpoints to measure response times and throughput.
+
+                                                2. Component Performance Testing – Evaluating a single service/module to ensure it can handle requests efficiently.
+
+                                                3. Integration Performance Testing – Checking API interactions with databases, third-party services, and other microservices.
+
+                                                4. System Performance Testing – Measuring the entire application's performance under different loads.
+
+                                                5. End-to-End Performance Testing – Simulating real-world scenarios across the full user journey, including UI and backend.
+
+Performance Testing Requirements for APIs
+The key requirements for API performance testing typically include:
+                                                   * Response Time: Ensure API responds within acceptable SLAs (e.g., under 2 seconds).
+
+                                                   * Throughput: Validate the number of requests per second the API can handle.
+
+                                                   * Concurrency: Test API performance under multiple simultaneous users.
+
+                                                   * Error Rate: Ensure error responses (e.g., 500, 504 errors) remain below a defined threshold.
+
+                                                   * Scalability: Verify the API’s ability to handle an increasing number of requests.
+
+Performance Testing Approach for API Testing
+1. Test Planning & Design
+                                                      * Identify API endpoints to be tested (e.g., login, order placement, data retrieval).
+
+                                                      * Define performance metrics (response time, latency, error rates).
+
+                                                      * Prepare test data and environment.
+
+2. JMeter Test Configuration
+                                                         * Thread Group Setup: Define number of virtual users, ramp-up time, and duration.
+
+                                                         * HTTP Samplers: Add requests for each API endpoint.
+
+                                                         * Timers: Simulate real-world delays between requests.
+
+                                                         * Assertions: Validate response codes, response times, and expected output.
+
+3. Load Test Execution
+                                                            * Baseline Test: Run a test with a low number of users to establish a baseline.
+
+                                                            * Load Test: Gradually increase concurrent users and measure response times.
+
+                                                            * Stress Test: Push beyond expected limits to identify breaking points.
+
+                                                            * Spike Test: Simulate sudden traffic surges.
+
+                                                            * Endurance Test: Run a prolonged test to check stability over time.
+
+4. Monitoring & Analysis
+                                                               * Collect JMeter Reports (Aggregate Report, Summary Report, Response Time Graph).
+
+                                                               * Use Server Monitoring Tools (New Relic, Grafana, Prometheus) to identify resource bottlenecks.
+
+                                                               * Analyze Logs & Database Performance for slow queries and server errors.
+
+5. Optimization & Retesting
+                                                                  * Work with developers to optimize API response times and fix performance bottlenecks.
+
+                                                                  * Retest after fixes to validate improvements.
+
+________________
+
+
+Execution Example: API Performance Testing Scenario
+                                                                     1. Scenario: Testing login API performance for 500 concurrent users.
+
+                                                                     2. Configuration:
+
+                                                                        * Threads: 500 users
+
+                                                                        * Ramp-up Time: 50 seconds
+
+                                                                        * Loop Count: 10 iterations
+
+                                                                        * Assertions: Response time < 2 sec, HTTP 200 response
+
+                                                                           3. Execution Steps:
+
+                                                                              * Run baseline test with 50 users.
+
+                                                                              * Scale up to 500 users and monitor performance.
+
+                                                                              * Identify and report errors if response time exceeds the threshold.
+
+                                                                                 4. Results & Findings:
+
+                                                                                    * API handles 450 users efficiently but slows down at 500 users.
+
+                                                                                    * Identified high database response time for authentication queries.
+
+                                                                                    * Recommended query optimization and caching.

@@ -1,0 +1,245 @@
+﻿Testing interview questions 
+
+
+
+
+Q1. In this application, there are 10 transactions in that one script. So, on 8th transaction, there is one report download is there. So, my report will get downloaded. But on 7th step, when I am there, when I am moving to 8th step, once my report is downloaded, it will be in progress. And it will move to 9th step. I need my script to wait until I get status as completed, and then it should move to the 9th step.
+ANS:  You can achieve this in LoadRunner using a polling mechanism that repeatedly checks the report status until it is "Completed."
+
+
+                                     Sample Code (Web HTTP/HTML Protocol)
+int retry = 0;
+int max_retries = 10; // Adjust this based on expected wait time
+int wait_time = 5; // Seconds to wait before checking again
+char status[50];
+
+
+lr_start_transaction("Download_Report");
+
+
+// Trigger report download (Step 8)
+web_url("DownloadReport",
+    "URL=http://example.com/download",
+    "TargetFrame=",
+    "Resource=0",
+    "Referer=",
+    "Mode=HTTP",
+    LAST);
+
+
+// Polling to check report status
+do {
+    lr_think_time(wait_time);
+    
+    // Fetch report status
+    web_reg_save_param("ReportStatus", "LB=<status>", "RB=</status>", LAST);
+    
+    web_url("CheckStatus",
+        "URL=http://example.com/status",
+        "TargetFrame=",
+        "Resource=0",
+        "Referer=",
+        "Mode=HTTP",
+        LAST);
+
+
+    strcpy(status, lr_eval_string("{ReportStatus}"));
+
+
+    if (strcmp(status, "Completed") == 0) {
+        lr_output_message("Report is ready.");
+        break;
+    } else {
+        lr_output_message("Report is still in progress... retrying.");
+    }
+    
+    retry++;
+} while (retry < max_retries);
+
+
+if (retry == max_retries) {
+    lr_error_message("Report did not complete in expected time.");
+    lr_end_transaction("Download_Report", LR_FAIL);
+} else {
+    lr_end_transaction("Download_Report", LR_PASS);
+}
+
+
+// Proceed to Step 9
+lr_start_transaction("Next_Step");
+// Your next step actions here...
+lr_end_transaction("Next_Step", LR_AUTO);
+
+
+
+
+Explanation:
+1. The script triggers the report download.
+2. It enters a loop to check the report status.
+3. If the report status is "Completed", the script proceeds to Step 9.
+4. If the status is still "In Progress", it waits and retries (up to max_retries).
+5. If the report doesn't complete within the set retries, it logs an error.
+**************************************************************************************************************************************
+
+
+Q2. If you suppose you have created scripts, today it is working fine, tomorrow when you are checking, there is some object reference that has been changed, so how will you handle it? 
+ANS:
+
+
+✅ Object Tracking:
+* Maintain a repository of object references and update them when changes are identified.
+✅ Use Error Handling:
+* Implement try-catch blocks (TruClient) or lr_continue_on_error(1) to prevent abrupt failures.
+✅ Monitor UI/API Changes:
+* Communicate with the development team to track UI updates proactively.
+✅ Re-record as a Last Resort:
+* If the change is major, re-record and compare with previous scripts to identify necessary updates.
+For Web (HTTP/HTML) Protocol
+Use Correlation:
+* If object references (IDs, session tokens) are dynamic, use web_reg_save_param() to capture them dynamically instead of hardcoding values.
+* Example– 
+web_reg_save_param("DynamicObjectID",
+    "LB=object_id=\"",
+    "RB=\"",
+    "Ord=1",
+    LAST);
+Use {DynamicObjectID} in requests instead of a static value.
+Use Regular Expressions:
+* Use web_reg_save_param_regexp() for flexible pattern matching when object attributes change dynamically.
+XPath or CSS Selectors for Web Applications:
+* If the object reference changes but follows a pattern, use XPath or CSS Selectors in conjunction with JavaScript execution.
+
+
+For TruClient Protocol:
+Use Descriptors Instead of Fixed XPath:
+* Instead of selecting objects by ID, use descriptive properties like:
+   * Text
+   * Class Names
+   * Inner HTML
+   * CSS Selectors
+Example:
+Instead of:
+vbnet
+CopyEdit
+Identify Object by ID: btn_12345
+Use:
+vbnet
+CopyEdit
+Identify Object by Visible Text: "Submit"
+Use JavaScript to Identify Objects Dynamically:
+* Use Evaluate JavaScript step to locate an element dynamically.
+Example:
+javascript
+CopyEdit
+var button = document.querySelector("button[class*='submit']");
+return button;
+Enable "Auto-Update" in TruClient:
+* In TruClient, enable automatic object recognition to allow the script to detect minor UI changes.
+**************************************************************************************************************************************
+Q3. How can we do parameterization in Truclient script?
+ANS;
+Parameterization in TruClient Script (LoadRunner)
+In TruClient, parameterization allows you to replace static values with dynamic values from a data set, making the script more flexible and reusable.
+Using LoadRunner Parameterization Feature
+1. Open TruClient Script in VuGen.
+2. Click on ‘Develop Script’ Mode.
+3. Locate the Step to Parameterize (e.g., Username, Password, URL, etc.).
+4. Right-click on the Value → Replace with Parameter.
+5. Select ‘New Parameter’ → Choose Parameter Type (e.g., CSV file, Random, Date, etc.).
+6. Click OK and Save the Script.
+
+
+Example: If you want to parameterize a username in a login field.
+Instead of hardcoding "testuser1", replace it with {Username}.
+The parameter will fetch values from a data file.
+Using Data Files (CSV) for Multiple Users
+* LoadRunner allows reading data from CSV files.
+* Steps:
+   1. Go to Parameters Section.
+   2. Upload a CSV File (e.g., users.csv with usernames and passwords).
+   3. Assign Columns as Parameters (e.g., {Username}, {Password}).
+   4. Set Parameterization Mode (Sequential, Random, Unique).
+✅ For simple values → Use LoadRunner’s built-in parameterization.
+✅ For dynamic/random values → Use JavaScript (Evaluate JS step).
+✅ For data-driven testing → Use CSV files and LoadRunner parameters.
+
+
+**************************************************************************************************************************************
+
+
+Q 4. Can you tell me what all browsers we have in loadrunner for Truclient Protocol?
+Ans Mozilla Firefox
+Google Chrome
+Internet Explorer (older versions)
+**************************************************************************************************************************************
+
+
+Q5. What all things you will check before configuring new APM tool for the application. And how will you configure it in loadrunner
+Ans Check APM agent compatibility with your application
+Identify key metrics (CPU, memory, response time, etc.)
+Configure APM tool integration with LoadRunner (Dynatrace, New Relic, AppDynamics)
+Enable transaction tracing and tagging
+**************************************************************************************************************************************
+
+
+Q 6. What are service flows and smart scape topology?
+Ans:-Dynatrace provides AI-driven application performance monitoring (APM) with powerful visualization features like Service Flows and Smartscape Topology to analyze system interactions.
+Service Flows:-----Definition:
+A Service Flow in Dynatrace shows a transaction's journey across different services in your system, helping to visualize how a request moves through the backend.
+Purpose:
+✔ Helps in identifying dependencies between services.✔ Shows bottlenecks in request processing.
+✔ Provides response time breakdowns per service.
+Example:A user request starts at Frontend Service → Authentication Service → Database → 3rd Party API.Service Flow shows this path step by step with latency details.
+Smartscape Topology
+Smartscape is a real-time topology map that dynamically visualizes the entire IT environment, including:
+✅ Applications
+✅ Services
+✅ Processes
+✅ Hosts
+✅ Data Centers & Cloud Instances
+Example:If a database server is overloaded, Smartscape Topology highlights affected services and applications in real time.
+
+
+Feature
+	Service Flow 
+	Smartscape Topology 
+	Focus
+	Transaction Journey
+	Overall System Architecture
+	Use Case
+	View real-time service dependencies
+	View real-time service dependencies
+	Visualization
+	Step-by-step flow of a request
+	Map of all services, apps, and hosts
+	Best for
+	Performance bottleneck analysis        
+	infrastructure monitoring
+	**************************************************************************************************************************************
+Q7. using Dynatrace as an APM tool, what all things you will check in Dynatrace?
+
+
+
+
+Q8. What APM tools have you used in your prior experience? 
+
+
+Q9. How will you decide the number of LGs required for your test?
+
+
+Q10. What is the difference between Web_reg_Find () and Web_Find()?
+
+
+ Q11. You need to calculate the number of virtual users needed for my test. If I need to achieve 100000 hits per hour and I'm considering my one API call is giving one second of response time. So how will you calculate virtual users? 
+
+
+Q12. What is the difference between save offset and save count?
+
+
+Q13. Explain pacing and all options we have in runtime settings
+
+
+Q14. How to get the Response from the redirected page in loadrunner. 
+
+
+Q15. Consider a scenario where You do not have any information. only functional testing has been completed and the client has asked to do or start the performance testing. So, what are all things you will look for?

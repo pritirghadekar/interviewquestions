@@ -1,0 +1,121 @@
+﻿Day to day activities for testing 
+
+
+So usually when there is a new deployment has been done for the particular stores there is a mcd application where we have to check end end flow for a customers , store managers  as in are they able to login or not into portal , then will check if they are able to put orders upto checkout aslo will check if manager have a admin access .
+In every particular store there is unique api by which we will check the correct data by mostly using jmeter and postman , error if we are getting correct output or not , if not will raise a ticket with development team and sometimes with l1 team.
+When new feature is developed , we coordinate  with developers to finalize testcases according to the requirements we get it from po 
+
+
+
+
+File structure
+
+
+In bit bucket we have repository ,in which we have different directories 
+1. Testplan / = in this directory we have jmx files such as
+1,smoke.jmx where we check major endpoints such as domain name(mcd.com etc),    login ,checkout etc. 
+2,login.jmx where we check login flow. 
+3,checkout.jmx where we check order flow
+4,load.jmx we check no of user 
+5,regression.jmx where we check end to end testing 
+
+
+    2 .   reports/ = in this directory results are saved which are auto-genrated after execution.
+
+
+    3.    data/ = in this directory user data body passed to post(),
+
+
+
+
+    4.   lib/  = in this directory we check package , api and urls 
+
+
+    5. config/ = in this directory we check user properties , threadgroup (no of users)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Architecture explanation 
+
+
+                                    Testing Approach for McDonald's Store Application
+* Manual Testing: Validate login, order placement, admin access, and API responses.
+
+* Performance Testing: Use JMeter to load test store-specific APIs.
+
+* API Testing: Use Postman for functional API validation.
+
+* Automation Testing (if applicable): Selenium, Cypress for UI testing
+How New Features Are Deployed
+   1. New feature developed – Assigned to testers via Jira.
+
+   2. Testing phase – Validate login, order flow, and store manager access.
+
+   3. API Testing – Ensure store-specific APIs return correct data.
+
+   4. Bug Reporting – Issues are escalated to Development or L1 teams.
+
+   5. Production Deployment – After successful testing, features go live.
+1. High-Level Overview
+McDonald's store application includes three primary user roles:
+      * Customers – Place orders via the app.
+
+      * Store Managers – Manage store operations and monitor orders.
+
+      * Internal Staff/Admins – Oversee store performance, data analytics, and admin access.
+
+________________
+
+
+2. Architecture Components
+A. Frontend Layer (Client-Side)
+         * Technologies Used: React, Angular, or Native Mobile Apps (iOS/Android).
+
+         * Purpose:
+
+            * Allows customers to browse menus, place orders, and make payments.
+
+            * Enables store managers to update menu items, manage inventory, and view reports.
+
+            * Supports role-based access for internal staff/admins.
+
+________________
+
+
+B. Backend Layer (Microservices & APIs)
+               * Technologies Used: Java (Spring Boot), Node.js, Python (Flask/Django).
+
+               * Key Microservices:
+
+                  * Authentication Service – Handles login/signup for customers, store managers, and staff.
+
+                  * Order Management Service – Manages order creation, tracking, and fulfillment.
+
+                  * Menu & Pricing Service – Provides dynamic pricing and menu updates per store.
+
+                  * Payment Gateway Integration – Supports payments via third-party providers (e.g., Stripe, PayPal).
+
+                  * Admin & Role Management Service – Grants store managers and internal staff appropriate access.
+
+Each store has a unique API that interacts with the backend to validate data and send real-time updates.
